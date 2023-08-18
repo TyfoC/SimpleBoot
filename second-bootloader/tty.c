@@ -31,7 +31,7 @@ void tty_puts(const char* srcStr) {
 	%TQ - quad (text)
 */
 void tty_printf(const char* fmt, ...) {
-	psize_t ptrArg = (psize_t)((size_t)&fmt + sizeof(size_t));
+	size_t* ptrArg = (size_t*)((size_t)&fmt + sizeof(size_t));
 	char* ptrFmt = (char*)&fmt[0];
 	while (*ptrFmt) {
 		if (*ptrFmt == '%') {

@@ -23,7 +23,7 @@ KernelBootBlock_t KernelBootBlock __attribute__((__aligned__(16)));
 SystemInfoBlock_t SystemInfoBlock __attribute__((__aligned__(16)));
 uint32_t KernelHeaderValues[3] __attribute__((__aligned__(4)));
 
-EXTERN_C void bootloader_main(uint8_t diskIndex, uint32_t kbbLBA, uint32_t kernelSectorLBA) {
+extern void bootloader_main(uint8_t diskIndex, uint32_t kbbLBA, uint32_t kernelSectorLBA) {
 	SystemInfoBlock.BIOSDiskIndex = (uint32_t)diskIndex;
 
 	tty_puts("A20 line: ");

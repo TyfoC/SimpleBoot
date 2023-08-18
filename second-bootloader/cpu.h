@@ -4,6 +4,6 @@
 
 #include "typedefs.h"
 
-EXTERN_C void cpu_far_jmp(uint32_t farPtr);
+extern void cpu_far_jmp(uint32_t farPtr);
 
 #endif

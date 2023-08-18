@@ -7,7 +7,8 @@
 		https://www.phatcode.net/res/221/files/vbe20.pdf
 */
 
-#include "typedefs.h"
+#include <stddef.h>
+#include <stdint.h>
 
 #define VESA_CAPABILITY_DAC_WIDTH_SWITCHABLE			0x01			// 6 bits/color -> 8 bits/color
 #define VESA_CAPABILITY_VGA_INCOMPATIBLE				0x02
@@ -89,6 +90,6 @@ uint8_t vesa_init(void);
 VESAInfo_t* vesa_get_info(void);
 VESAModeInfo_t* vesa_get_mode_info(uint16_t modeNumber);
 uint16_t vesa_search_mode(uint16_t width, uint16_t height, uint8_t bitsPerPixel, uint8_t attributes, uint8_t memModel, uint32_t* lfbAddr);
-EXTERN_C uint8_t vesa_set_mode(uint16_t modeNumber);
+extern uint8_t vesa_set_mode(uint16_t modeNumber);
 
 #endif

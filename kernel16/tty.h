@@ -2,7 +2,8 @@
 #ifndef TTY_H
 #define TTY_H
 
-#include "strlib.h"
+#include <stdlib.h>
+#include <string.h>
 #include "mem.h"
 
 #define TTY_TAB_LEN			4

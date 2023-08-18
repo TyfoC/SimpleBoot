@@ -31,7 +31,7 @@ void tty_puts(const char* srcStr) {
 	%TQ - quad (text)
 */
 void tty_printf(const char* fmt, ...) {
-	psize_t ptrArg = (psize_t)((size_t)&fmt + sizeof(size_t));
+	size_t* ptrArg = (size_t*)((size_t)&fmt + sizeof(size_t));
 	char* ptrFmt = (char*)&fmt[0];
 	while (*ptrFmt) {
 		if (*ptrFmt == '%') {
@@ -39,23 +39,23 @@ void tty_printf(const char* fmt, ...) {
 			else if (*ptrFmt == 'c') tty_putc(*ptrArg++);
 			else if (*ptrFmt == 's') tty_puts((char*)*ptrArg++);
 			else if (*ptrFmt == 'd') {
-				ltoa(*ptrArg++, 10, tmp_buffer_);
+				ltoa(*ptrArg++, tmp_buffer_, 10);
 				tty_puts(tmp_buffer_);
 			}
 			else if (*ptrFmt == 'u') {
-				ultoa(*ptrArg++, 10, tmp_buffer_);
+				ultoa(*ptrArg++, tmp_buffer_, 10);
 				tty_puts(tmp_buffer_);
 			}
 			else if (*ptrFmt == 'x') {
-				ultoa(*ptrArg++, 16, tmp_buffer_);
+				ultoa(*ptrArg++, tmp_buffer_, 16);
 				tty_puts(tmp_buffer_);
 			}
 			else if (*ptrFmt == 'o') {
-				ultoa(*ptrArg++, 8, tmp_buffer_);
+				ultoa(*ptrArg++, tmp_buffer_, 8);
 				tty_puts(tmp_buffer_);
 			}
 			else if (*ptrFmt == 'b') {
-				ultoa(*ptrArg++, 2, tmp_buffer_);
+				ultoa(*ptrArg++, tmp_buffer_, 2);
 				tty_puts(tmp_buffer_);
 			}
 			else if (*ptrFmt == 'T') {

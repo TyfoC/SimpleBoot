@@ -2,7 +2,7 @@
 #ifndef SYSTEM_INFO_BLOCK_H
 #define SYSTEM_INFO_BLOCK_H
 
-#include "typedefs.h"
+#include <stdint.h>
 
 typedef struct {
 	uint32_t	MemoryMapAddress;

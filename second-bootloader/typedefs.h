@@ -2,15 +2,16 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
-#define FALSE			0
-#define TRUE			1
+#define true			1
+#define false			0
+#define bool			_Bool
 
 #define _CONCAT($a, $b)	$a##$b
 #define CONCAT($a, $b)	_CONCAT($a, $b)
 #define _STRINGIFY(...)	#__VA_ARGS__
 #define STRINGIFY(...)	_STRINGIFY(__VA_ARGS__)
 
-#define EXTERN_C		extern
+#define extern		extern
 
 #define ASM(...)		__asm__ __volatile__(__VA_ARGS__)
 #define ATTRIBUTE(...)	__attribute__((__VA_ARGS__))
@@ -54,10 +55,10 @@ typedef unsigned int uint32_t, *puint32_t;
 typedef long long int64_t, *pint64_t;
 typedef unsigned long long uint64_t, *puint64_t;
 
-typedef __PTRDIFF_TYPE__ ptrdiff_t, *pptrdiff_t;
-typedef __SIZE_TYPE__ size_t, *psize_t;
+typedef __PTRDIFF_TYPE__ ptrdiff_t;
+typedef __SIZE_TYPE__ size_t;
 
-EXTERN_C void* __PTR_BASE_ADDRESS__;
-EXTERN_C void* __PTR_END_ADDRESS__;
+extern void* __PTR_BASE_ADDRESS__;
+extern void* __PTR_END_ADDRESS__;
 
 #endif

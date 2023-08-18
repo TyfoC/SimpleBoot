@@ -1,5 +1,5 @@
 #	Build your kernel!
-##	**To interact with the build process, you need to change to the `build` directory!**
+##	**The project is built in the `build` directory, the result is in `build/bin`!**
 ##	**Be sure to look at the `build/Makefile` for build information!**
 ###	To build the kernel, you need to specify some parameters that will make the right environment for your kernel:
 `cpum` - the processor mode your kernel is running in
@@ -21,6 +21,7 @@
 | 1               | 80    | 25     | 8   | 0xB8000       |
 | 2               | 320   | 200    | 8   | 0xA0000       |
 | 3               | UD    | UD     | UD  | ???           |
+
 `UD` - user-defined
 
 `vma` - video mode attributes (**only for VESA**) (page - 31, real page offset - 40: https://pdos.csail.mit.edu/6.828/2018/readings/hardware/vbe3.pdf)

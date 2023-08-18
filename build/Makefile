@@ -11,16 +11,17 @@ DIR_THIRD_BOOTLDR=../third-bootloader
 DIR_KERNEL16=../kernel16
 DIR_KERNEL32=../kernel32
 DIR_RESULT=bin
+DIR_LIBRARY=../library
 
 COMMON_COMPILE_FLAGS=-O0 -ffreestanding -Wall -Wextra
-COMMON_LINK_FLAGS=-O0 -ffreestanding -Wall -Wextra -nostdlib -nodefaultlibs -Wall -Wextra
+COMMON_LINK_FLAGS=-O0 -ffreestanding -Wall -Wextra -nostdlib -Wall -Wextra
 SECOND_BOOTLDR_COMPILE_FLAGS=-m16 $(COMMON_COMPILE_FLAGS)
 SECOND_BOOTLDR_LINK_FLAGS=-m16 $(COMMON_LINK_FLAGS) -T second-bootldr.ld
 
-KERNEL16_COMPILE_FLAGS=-m16 $(COMMON_COMPILE_FLAGS)
-KERNEL16_LINK_FLAGS=-m16 $(COMMON_LINK_FLAGS) -T kernel16.ld
-KERNEL32_COMPILE_FLAGS=-m32 $(COMMON_COMPILE_FLAGS)
-KERNEL32_LINK_FLAGS=-m32 $(COMMON_LINK_FLAGS) -T kernel32.ld
+KERNEL16_COMPILE_FLAGS=-m16 $(COMMON_COMPILE_FLAGS) -I $(DIR_LIBRARY)
+KERNEL16_LINK_FLAGS=-m16 $(COMMON_LINK_FLAGS) -T kernel16.ld -lgcc
+KERNEL32_COMPILE_FLAGS=-m32 $(COMMON_COMPILE_FLAGS) -I $(DIR_LIBRARY)
+KERNEL32_LINK_FLAGS=-m32 $(COMMON_LINK_FLAGS) -T kernel32.ld -lgcc
 
 SECOND_BOOTLDR_C_SRCS=$(shell find $(DIR_SECOND_BOOTLDR)/ -name *.c)
 SECOND_BOOTLDR_ASM_SRCS=$(shell find $(DIR_SECOND_BOOTLDR)/ -name *.asm)
@@ -36,6 +37,10 @@ KERNEL32_C_SRCS=$(shell find $(DIR_KERNEL32)/ -name *.c)
 KERNEL32_ASM_SRCS=$(shell find $(DIR_KERNEL32)/ -name *.asm)
 KERNEL32_ASM_OBJS=$(addsuffix .k32.o, $(KERNEL32_ASM_SRCS))
 KERNEL32_C_OBJS=$(addsuffix .k32.o, $(KERNEL32_C_SRCS))
+
+LIBRARY_C_SRCS=$(shell find $(DIR_LIBRARY)/ -name *.c)
+LIBRARY16_C_OBJS=$(addsuffix .lib16.o, $(LIBRARY_C_SRCS))
+LIBRARY32_C_OBJS=$(addsuffix .lib32.o, $(LIBRARY_C_SRCS))
 
 #	If you only want to build the kernel and remove the object files, then do this (change arguments as needed):
 #	Real Mode [16-bit] kernel:
@@ -84,12 +89,19 @@ clear-objs:
 	rm -f $(SECOND_BOOTLDR_C_OBJS) $(SECOND_BOOTLDR_ASM_OBJS)
 	rm -f $(KERNEL16_C_OBJS) $(KERNEL16_ASM_OBJS)
 	rm -f $(KERNEL32_C_OBJS) $(KERNEL32_ASM_OBJS)
+	rm -f $(LIBRARY16_C_OBJS) $(LIBRARY32_C_OBJS)
 
 run-os16:
-	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)16.bin -D $(DIR_RESULT)/$(LOG) -d cpu_reset
+	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)16.bin
 
 run-os32:
-	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)32.bin -D $(DIR_RESULT)/$(LOG) -d cpu_reset
+	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)32.bin
+
+dbg-os16:
+	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)16.bin -D $(DIR_RESULT)/$(LOG) -d cpu_reset
+
+dbg-os32:
+	$(EMU) -monitor stdio -m 256M -cpu max -drive format=raw,file=$(DIR_RESULT)/$(RESULT_NAME)32.bin -D $(DIR_RESULT)/$(LOG) -d cpu_resetd
 
 #	Kernel boot config
 build-kernel-cfg:
@@ -188,18 +200,24 @@ build-bootloader32:
 
 #	Kernel:
 build-kernel16:
+ifneq ($(LIBRARY_C_SRCS),)
+	$(MAKE) $(LIBRARY16_C_OBJS)
+endif
 	$(MAKE) $(KERNEL16_C_OBJS)
 ifneq ($(KERNEL16_ASM_SRCS),)
 	$(MAKE) $(KERNEL16_ASM_OBJS)
 endif
-	$(COMPILER) $(KERNEL16_ASM_OBJS) $(KERNEL16_C_OBJS) $(KERNEL16_LINK_FLAGS) -o $(DIR_RESULT)/kernel16.bin
+	$(COMPILER) $(LIBRARY16_C_OBJS) $(KERNEL16_ASM_OBJS) $(KERNEL16_C_OBJS) $(KERNEL16_LINK_FLAGS) -o $(DIR_RESULT)/kernel16.bin
 
 build-kernel32:
+ifneq ($(LIBRARY_C_SRCS),)
+	$(MAKE) $(LIBRARY32_C_OBJS)
+endif
 	$(MAKE) $(KERNEL32_C_OBJS)
 ifneq ($(KERNEL32_ASM_SRCS),)
 	$(MAKE) $(KERNEL32_ASM_OBJS)
 endif
-	$(COMPILER) $(KERNEL32_ASM_OBJS) $(KERNEL32_C_OBJS) $(KERNEL32_LINK_FLAGS) -o $(DIR_RESULT)/kernel32.bin
+	$(COMPILER) $(LIBRARY32_C_OBJS) $(KERNEL32_ASM_OBJS) $(KERNEL32_C_OBJS) $(KERNEL32_LINK_FLAGS) -o $(DIR_RESULT)/kernel32.bin
 
 %.c.k16.o:		%.c
 	$(COMPILER) -c $< $(KERNEL16_COMPILE_FLAGS) -o $@
@@ -213,8 +231,14 @@ endif
 %.asm.k32.o:	%.asm
 	$(ASSEMBLER) -felf $< -i $(DIR_KERNEL32)/ -o $@
 
+%.c.lib16.o:	%.c
+	$(COMPILER) -c $< $(KERNEL16_COMPILE_FLAGS) -o $@
+
+%.c.lib32.o:	%.c
+	$(COMPILER) -c $< $(KERNEL32_COMPILE_FLAGS) -o $@
+
 clear-kernel16:
-	rm -f $(KERNEL16_C_OBJS) $(KERNEL16_ASM_OBJS) $(DIR_RESULT)/kernel16.bin
+	rm -f $(LIBRARY16_C_OBJS) $(KERNEL16_C_OBJS) $(KERNEL16_ASM_OBJS) $(DIR_RESULT)/kernel16.bin
 
 clear-kernel32:
-	rm -f $(KERNEL32_C_OBJS) $(KERNEL32_ASM_OBJS) $(DIR_RESULT)/kernel32.bin
+	rm -f $(LIBRARY32_C_OBJS) $(KERNEL32_C_OBJS) $(KERNEL32_ASM_OBJS) $(DIR_RESULT)/kernel32.bin

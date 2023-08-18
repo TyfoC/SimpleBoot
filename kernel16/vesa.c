@@ -3,8 +3,8 @@
 static VESAInfo_t info_ __attribute__((__aligned__(16)));
 static VESAModeInfo_t mode_info_ __attribute__((__aligned__(16)));
 
-EXTERN_C uint8_t __vesa_init(VESAInfo_t* info);
-EXTERN_C uint8_t __vesa_get_mode_info(VESAModeInfo_t* modeInfo, uint16_t modeNumber);
+extern uint8_t __vesa_init(VESAInfo_t* info);
+extern uint8_t __vesa_get_mode_info(VESAModeInfo_t* modeInfo, uint16_t modeNumber);
 
 uint8_t vesa_init(void) {
 	return __vesa_init(&info_);

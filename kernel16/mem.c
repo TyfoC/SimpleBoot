@@ -1,24 +1,11 @@
 #include "mem.h"
 
-EXTERN_C uint8_t __mem_get_map_entry_e820(uint32_t dstFarPtr, uint32_t* entryOffset);
+extern uint8_t __mem_get_map_entry_e820(uint32_t dstFarPtr, uint32_t* entryOffset);
 
 // EAX[0-15] - number of kilobytes between 1MB and 16MB
 // EAX[16-31] - number of kilobytes above 16M
-EXTERN_C uint16_t __mem_e801(void);
-EXTERN_C void __mem_init_entry(uint32_t dstFarPtr, uint32_t addr, uint32_t size);
-
-void* memcpy(void* dst, const void* src, size_t size) {
-	uint8_t* src8 = (uint8_t*)src;
-	uint8_t* dst8 = (uint8_t*)dst;
-	for (size_t i = 0; i < size; i++) dst8[i] = src8[i];
-	return dst;
-}
-
-void* memset(void* dst, uint8_t value, size_t size) {
-	uint8_t* dst8 = (uint8_t*)dst;
-	for (size_t i = 0; i < size; i++) dst8[i] = value;
-	return dst;
-}
+extern uint16_t __mem_e801(void);
+extern void __mem_init_entry(uint32_t dstFarPtr, uint32_t addr, uint32_t size);
 
 void memcpy_ext(uint32_t dstAddr, uint32_t srcAddr, uint32_t size) {
 	uint32_t longParts = size / sizeof(uint32_t);
@@ -59,7 +46,7 @@ size_t mem_get_map(uint32_t dstAddr) {
 }
 
 size_t mem_get_map_e820(uint32_t dstAddr) {
-	uint8_t status = TRUE;
+	uint8_t status = true;
 	uint32_t entryOffset = 0;
 	size_t mapLength = 0;
 	do {

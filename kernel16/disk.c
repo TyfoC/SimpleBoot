@@ -21,14 +21,14 @@ uint8_t disk_select(uint8_t diskIndex) {
 		:"=c"(last_cylinder_index_), "=d"(tmpLastHead)
 		:"a"(0x0800), "d"(diskIndex));
 
-	if (!tmpLastHead) return FALSE;
+	if (!tmpLastHead) return false;
 
 	disk_index_ = diskIndex;
 	last_head_index_ = tmpLastHead >> 8;
 	last_sector_number_ = last_cylinder_index_ & MAX_SECTOR_NUMBER;
 	last_cylinder_index_ = (last_cylinder_index_ >> 8) | (((last_cylinder_index_ & 0xC0) >> 6) << 8);
 
-	return TRUE;
+	return true;
 }
 
 uint8_t disk_get_index(void) {

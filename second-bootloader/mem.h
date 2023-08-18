@@ -18,9 +18,9 @@ typedef struct __attribute__((__packed__)) {
 	srcAddr - src buffer address
 	dstAddr - dst buffer address
 */
-EXTERN_C void mem_copy_longs_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t longsCount);
-EXTERN_C void mem_copy_words_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t wordsCount);
-EXTERN_C void mem_copy_bytes_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t bytesCount);
+extern void mem_copy_longs_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t longsCount);
+extern void mem_copy_words_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t wordsCount);
+extern void mem_copy_bytes_from_pm(uint32_t srcAddr, uint32_t dstAddr, uint32_t bytesCount);
 
 void* memcpy(void* dst, const void* src, size_t size);
 void* memset(void* dst, uint8_t value, size_t size);

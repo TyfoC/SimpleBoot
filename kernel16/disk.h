@@ -8,6 +8,7 @@
 		https://wiki.osdev.org/Disk_access_using_the_BIOS_(INT_13h)
 */
 
+#include <stdbool.h>
 #include "bios.h"
 #include "mem.h"
 
