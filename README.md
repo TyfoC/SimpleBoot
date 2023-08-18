@@ -54,7 +54,7 @@ make clear-os16
 make clear-os32
 ```
 ###	In which folder should I write the code and where is the main file, the entry point?
-####	If you want to write a kernel for real mode \[16-bit\], then all files in the `../kernel16` folder, if you want to write a kernel for protected mode \[32-bit\], then the path to the folder is `../kernel32`
+####	If you want to write a kernel for real mode \[16-bit\], then all files in the `kernel16` folder, if you want to write a kernel for protected mode \[32-bit\], then the path to the folder is `kernel32`
 
 ###	Real Mode OS limitations
 ####	Due to GCC restrictions, real mode code can only be located in the first segment, so your kernel is located at 0x6000, you only have 0xA000 bytes available
